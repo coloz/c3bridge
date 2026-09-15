@@ -10,6 +10,17 @@
 将所需库目录安装到 Arduino 的 `libraries/`，或在 Arduino CLI 使用
 `--libraries D:\Git\ESP32C3Link\arduino-libraries`。
 
+## ESP32-C3 固件 Flash 配置
+
+`c3bridge-firmware/` 默认使用 **4MB Flash**。编译和烧录时选择
+`ESP32C3 Dev Module`，将 `Flash Size` 设为 `4MB (32Mb)`
+（Arduino CLI 板卡参数：`esp32:esp32:esp32c3:FlashSize=4M`），
+并使用固件目录中的 `partitions.csv` 自定义分区表。
+
+分区保留双 OTA 应用槽（每个 1.5MB）、512KB 证书区、384KB 存储区和
+64KB 崩溃转储区；分区结束地址为 `0x400000`（4MB）。
+从旧的 8MB 布局迁移时，需要通过串口烧录包含新分区表的完整固件。
+
 ## 主控适配
 
 | 平台 | 实现范围 | 说明 |
