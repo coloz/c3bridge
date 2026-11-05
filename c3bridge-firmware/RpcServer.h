@@ -11,6 +11,11 @@ class RpcServer {
  public:
   bool begin(HardwareSerial& serial);
   void poll();
+  // Diagnostics only. Reading these never touches the protocol UART.
+  uint32_t session() const { return session_; }
+  bool hciRunning() const { return services_.hciRunning(); }
+  uint32_t hciQueuedBytes() { return services_.hciQueuedBytes(); }
+  uint32_t hciOutgoingQueued() const { return services_.hciOutgoingQueued(); }
  private:
   static void workerThunk(void* context);
   void worker();
