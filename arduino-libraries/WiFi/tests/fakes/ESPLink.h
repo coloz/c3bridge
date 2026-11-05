@@ -4,6 +4,8 @@
 class ESPLinkClass {
 public:
  uint32_t token=1;bool active=true;
+ struct Capabilities { uint32_t features = c3::Provisioning; } caps;
+ Capabilities capabilities() const { return caps; }
  bool begin(HardwareSerial&,uint32_t=115200,uint32_t=10000);
  bool begin(){active=true;return true;}
  void poll(){}

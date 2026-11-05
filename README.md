@@ -1,5 +1,8 @@
 # ESP32-C3 串口 WiFi / BLE 扩展
 
+现支持 Espressif `wifi_prov` BLE / SoftAP 配网。主控通过 `WiFiProv.h`
+启动、停止、查询配网状态及重置凭据；详见 [配网 API 与使用说明](arduino-libraries/WiFi/README-PROVISIONING.md)。
+
 使用esp32c3为没有wifi、ble的arduino扩展相关功能，使其能达到和arduino UNO R4近似的功能。
 
 - `c3bridge-firmware/`：ESP32-C3 源码。
@@ -16,6 +19,8 @@
 `ESP32C3 Dev Module`，将 `Flash Size` 设为 `4MB (32Mb)`
 （Arduino CLI 板卡参数：`esp32:esp32:esp32c3:FlashSize=4M`），
 并使用固件目录中的 `partitions.csv` 自定义分区表。
+Arduino CLI 还需传入 `--build-property upload.maximum_size=1572864`，
+使容量检查与该分区表一致；可直接运行 `tools/test-provisioning.ps1 -Target firmware`。
 
 分区保留双 OTA 应用槽（每个 1.5MB）、512KB 证书区、384KB 存储区和
 64KB 崩溃转储区；分区结束地址为 `0x400000`（4MB）。

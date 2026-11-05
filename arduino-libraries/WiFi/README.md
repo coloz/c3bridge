@@ -37,6 +37,7 @@ Call `WiFi.poll()` regularly in `loop()`; it also advances the cooperative ESPLi
 
 ## Implemented API
 
+- `WiFiProv` (`#include <WiFiProv.h>`): Espressif BLE/SoftAP WiFi provisioning, Security 0/1, progress and failure status, saved credentials and retry/reset controls. See the [provisioning API and examples](README-PROVISIONING.md).
 - `WiFiClass`: STA, AP and AP+STA modes; connect, disconnect, reconnect and auto-reconnect; status, RSSI, BSSID, MAC, channel and addresses; hostname; IPv4 DHCP/static configuration and DNS; AP configuration/status; synchronous and asynchronous scan; sleep and transmit-power options; time configuration and retrieval; polling-based events.
 - `WiFiClient`: TCP connections by hostname or `IPAddress`, buffered reads and peek, partial writes, connection status, remote/local port, no-delay and keepalive options.
 - `WiFiServer`: IPv4 wildcard listening, accept, available and writes to clients retained by `available()`.

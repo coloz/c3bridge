@@ -135,6 +135,7 @@ void RpcServer::worker() {
     const bool reset = resetRequested_;
     xSemaphoreGive(lock_);
     if (reset) { completeReset(); continue; }
+    services_.poll();
     c3::Frame request;
     if (xQueueReceive(jobs_, &request, pdMS_TO_TICKS(10)) != pdTRUE) continue;
     c3::Frame response;

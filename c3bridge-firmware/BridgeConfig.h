@@ -24,5 +24,5 @@
 #ifndef C3_HCI_TX_DEPTH
 #define C3_HCI_TX_DEPTH 4
 #endif
-#define C3_BRIDGE_VERSION "0.1.0"
+#define C3_BRIDGE_VERSION "0.2.0"
 #define C3_BRIDGE_CORE_VERSION "3.3.11"

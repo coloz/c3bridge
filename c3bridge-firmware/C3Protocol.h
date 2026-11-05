@@ -42,7 +42,8 @@ enum class Type : uint8_t {
 };
 enum Feature : uint32_t {
   WiFi = 1U, TCP = 2U, UDP = 4U, TLS = 8U, HCI = 16U,
-  IPv6 = 32U, StationAP = 64U, OTA = 128U, MDNS = 256U
+  IPv6 = 32U, StationAP = 64U, OTA = 128U, MDNS = 256U,
+  Provisioning = 512U
 };
 enum class Opcode : uint16_t {
   Echo = 0x0001, SystemInfo = 0x0002, Restart = 0x0003,
@@ -54,6 +55,8 @@ enum class Opcode : uint16_t {
   WifiAutoReconnect = 0x0116, WifiSetOption = 0x0117,
   WifiDNS = 0x0118, WifiGetOption = 0x0119,
   DnsResolve = 0x0120, TimeConfig = 0x0121, TimeGet = 0x0122,
+  WifiProvBegin = 0x0130, WifiProvEnd = 0x0131, WifiProvStatus = 0x0132,
+  WifiProvReset = 0x0133, WifiProvRetry = 0x0134,
   SocketOpen = 0x0200, SocketConnect = 0x0201, SocketRead = 0x0202,
   SocketWrite = 0x0203, SocketStatus = 0x0204, SocketClose = 0x0205,
   SocketListen = 0x0206, SocketAccept = 0x0207, SocketOption = 0x0208,

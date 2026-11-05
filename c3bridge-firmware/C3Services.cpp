@@ -20,6 +20,7 @@ bool C3Services::begin() {
   return backend::beginResolver();
 }
 void C3Services::reset() {
+  if(!provisioning_.reset()) { ESP.restart(); return; }
   for(auto& s:backend::sockets) backend::clearSlot(s);
   for(auto& c:backend::certificates) backend::clearCertificate(c);
   hci_.end(); haveHci=false; hciOffset=0;
@@ -32,6 +33,22 @@ void C3Services::execute(const c3::Frame& request,c3::Frame& response) {
   const auto op=static_cast<c3::Opcode>(request.opcode);
   int status=c3::Ok;
   auto run=[&]() -> int {
+    provisioning_.poll();
+    if(request.opcode>=0x0130&&request.opcode<=0x0134)
+      return provisioning_.execute(op,r,w,hci_.running());
+    // Provisioning owns WiFi configuration and scans until its transport stops.
+    if(provisioning_.active()) {
+      switch(op) {
+        case c3::Opcode::WifiMode: case c3::Opcode::WifiBegin:
+        case c3::Opcode::WifiDisconnect: case c3::Opcode::WifiConfig:
+        case c3::Opcode::WifiScanStart: case c3::Opcode::WifiScanDelete:
+        case c3::Opcode::WifiAPBegin: case c3::Opcode::WifiAPConfig:
+        case c3::Opcode::WifiAPStop: case c3::Opcode::WifiReconnect:
+        case c3::Opcode::WifiAutoReconnect: case c3::Opcode::WifiSetOption:
+          return c3::Busy;
+        default: break;
+      }
+    }
     if(request.opcode>=0x0200&&request.opcode<0x0240) return network(op,r,w);
     if(request.opcode>=0x0240&&request.opcode<0x0300) return security(op,r,w);
     switch(op) {
@@ -187,10 +204,12 @@ void C3Services::execute(const c3::Frame& request,c3::Frame& response) {
       }
       case c3::Opcode::HciBegin:
         if(!r.done()) return c3::InvalidArgument;
+        if(provisioning_.ownsBLE()) return c3::Busy;
         if(!hci_.begin()) return c3::IoError;
         haveHci=false; hciOffset=0; break;
       case c3::Opcode::HciEnd:
         if(!r.done()) return c3::InvalidArgument;
+        if(provisioning_.ownsBLE()) return c3::Busy;
         hci_.end(); haveHci=false; hciOffset=0; break;
       case c3::Opcode::HciWrite:
         if(!hci_.running()) return c3::NotConnected;
