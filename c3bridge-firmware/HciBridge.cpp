@@ -53,7 +53,7 @@ bool HciBridge::enqueue(const uint8_t* data,size_t size) {
   if(!active_||fault_||!data||!size||size>C3_HCI_MAX_PACKET) return false;
   size_t expected=0;
   if(data[0]==0x01&&size>=4) expected=4U+data[3];
-  else if(data[0]==0x02&&size>=5) expected=5U+data[3]+(size_t(data[4])<<8);
+  else if(data[0]==0x02&&size>=5) expected=5U+data[3]+(size_t(data[4])<<8);  
   if(size!=expected) { invalid_=invalid_+1; return false; }
   HciPacket packet{}; packet.size=size; memcpy(packet.bytes,data,size);
   return xQueueSend(outgoing_,&packet,0)==pdTRUE;

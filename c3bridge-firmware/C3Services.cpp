@@ -3,6 +3,7 @@
 #include "BridgeConfig.h"
 #include <algorithm>
 #include <time.h>
+#include "esp_mac.h"
 #include "esp_random.h"
 #include "esp_wifi.h"
 #include "esp_sntp.h"
@@ -66,7 +67,11 @@ void C3Services::execute(const c3::Frame& request,c3::Frame& response) {
       }
       case c3::Opcode::WifiStatus: {
         if(!r.done()) return c3::InvalidArgument;
-        uint8_t mac[6]{},bssid[6]{}; WiFi.macAddress(mac); WiFi.BSSID(bssid);
+        uint8_t mac[6]{},bssid[6]{};
+        // macAddress() returns NULL and leaves the buffer untouched while the
+        // STA netif does not exist, which would report an all-zero MAC.
+        if(!WiFi.macAddress(mac)) esp_read_mac(mac,ESP_MAC_WIFI_STA);
+        WiFi.BSSID(bssid);
         w.u8(WiFi.status()); w.u8(WiFi.getMode()); w.i32(WiFi.RSSI()); w.u8(WiFi.channel());
         w.bytes(mac,6); w.bytes(bssid,6); w.string(WiFi.SSID().c_str()); w.string(WiFi.getHostname());
         writeAddress(w,WiFi.localIP()); writeAddress(w,WiFi.gatewayIP()); writeAddress(w,WiFi.subnetMask());

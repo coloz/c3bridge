@@ -18,6 +18,11 @@ class HciBridge {
   uint32_t overflowCount() const { return overflows_; }
   uint32_t invalidCount() const { return invalid_; }
   uint32_t queuedBytes();
+  // Controller-bound backlog. A non-draining value means the controller has
+  // stopped accepting packets even though HciWrite kept reporting success.
+  uint32_t outgoingQueued() const {
+    return outgoing_ ? uint32_t(uxQueueMessagesWaiting(outgoing_)) : 0;
+  }
  private:
   static void sendReady();
   static int receivePacket(uint8_t* data,uint16_t size);
